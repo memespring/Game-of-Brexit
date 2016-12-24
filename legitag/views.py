@@ -37,7 +37,7 @@ def legislation():
 
     questions = [
         {'key': 'policy', 'question': 'Name some policy areas this might cover', 'examples': 'eg farming, workers rights, groundwater management'},
-        {'key': 'user', 'question': 'Name some people or organisations this might it affect', 'examples': 'eg farmer, supermarket, police, car manufacturer'},
+        {'key': 'user', 'question': 'Name some people or organisations this might affect', 'examples': 'eg farmer, supermarket, police, car manufacturer'},
         {'key': 'devolvable', 'question': 'Could this reasonably be devolved to Scotland, Wales, Northern Ireland or London?', 'examples': None, 'choices': [('yes', 'Yes'), ('no', 'No')]},
         {'key': 'important', 'question': 'Does this sound important?', 'examples': None, 'choices': [('yes', 'Yes'), ('no', 'No')]},
         {'key': 'ministers-should-decide', 'question': 'Should ministers be able to make decisions about this without a vote in parliament?', 'examples': None, 'choices': [('yes', 'Yes'), ('no', 'No')]},

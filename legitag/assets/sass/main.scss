@@ -3,13 +3,19 @@
 @include foundation-everything;
 
 body {
+  padding-top:1rem;
   text-align: center;
   color:#fff;
 }
 
 #logo {
   height:120px;
-  margin:80px 40px 40px 40px;
+  margin:0 40px 20px 40px;
+}
+
+h1.app-name {
+  font-weight:bold;
+  text-transform: uppercase;
 }
 
 h2 {
@@ -24,6 +30,15 @@ label {
   color:#fff;
 }
 
+blockquote {
+  color:$white;
+  border-top: 1px solid $white;
+  border-bottom: 1px solid $white;
+  border-left:none;
+  padding-bottom:1rem;
+  padding-top:1rem;
+  font-style: italic;
+}
 a, a:hover {
   color:#fff;
   text-decoration: underline;

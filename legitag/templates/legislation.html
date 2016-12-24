@@ -9,38 +9,28 @@
     <div class="small-12 large-8 large-offset-2 columns">
       <form id="question" action="" method="post">
           {{ form.csrf_token }}
-          
-          <p class="lead">
+          <h1>{{form.values.label}}</h1>
+          {{form.legislation_id}}
+          {{form.key}}
+          <blockquote>
             &#8220;{{legislation.friendly_title}}&#8221;
-          </p>
+          </blockquote>
           <p>
             <a target="_new" href="{{legislation.html_url}}">
               <small>View full text</small>
             </a>
           </p>
-          {{form.legislation_id}}
-          {{form.key}}
-          {{form.values.label}}
           {{form.values}}
           {% if form.values.description %}
             <p class="help-text">{{form.values.description}}</p>
           {% endif %}
-          
-          {% if random %}
-            <p>
-              <button type="submit" class="button expanded">Save answer</button>
-            </p>
-            <p class="text-center"> 
-              <a href="{{url_for('legislation')}}">I've no idea, skip this one.</a>
-            </p>
-          {% else %}
-            <p>
-              <button type="submit" class="button expanded">Save</button>
-            </p>
-            <p>
-              <a href="{{url_for('legislation')}}">I have no idea &mdash; skip this one</a>
-            </p>
-          {% endif %}
+
+          <p>
+            <button type="submit" class="button expanded">Save</button>
+          </p>
+          <p>
+            <a href="{{url_for('legislation')}}">I don't know or I don't think this is relevant to the UK</a>
+          </p>
         </div>
       </form>
     </div>
