@@ -36,9 +36,11 @@ def legislation():
         abort(404)
 
     questions = [
-        {'key': 'policy', 'question': 'Name some policy areas this might cover:', 'examples': 'eg farming, workers rights, groundwater management'},
-        {'key': 'user', 'question': 'What types of person, groups or organisation might it affect?', 'examples': 'eg farmer, supermarket, police, car manufacturer'},
-        {'key': 'organisation', 'question': 'What specific, named organisations might it affect?', 'examples': 'eg farmer, supermarket, police, car manufacturer'},
+        {'key': 'policy', 'question': 'Name some policy areas this might cover', 'examples': 'eg farming, workers rights, groundwater management'},
+        {'key': 'user', 'question': 'Name some people or organisations this might it affect', 'examples': 'eg farmer, supermarket, police, car manufacturer'},
+        {'key': 'devolvable', 'question': 'Could this reasonably be devolved to Scotland, Wales, Northern Ireland or London?', 'examples': None, 'choices': [('yes', 'Yes'), ('no', 'No')]},
+        {'key': 'important', 'question': 'Does this sound important?', 'examples': None, 'choices': [('yes', 'Yes'), ('no', 'No')]},
+        {'key': 'ministers-should-decide', 'question': 'Should ministers be able to make decisions about this without a vote in parliament?', 'examples': None, 'choices': [('yes', 'Yes'), ('no', 'No')]},
     ]
 
     if request.method == 'GET':
@@ -47,8 +49,12 @@ def legislation():
         legislation = models.Legislation.objects[random.randint(0, total-1):].first()
 
         #populate form
-        form = forms.TagForm()
         question = random.choice(questions)
+        if 'choices' in question:
+            form = forms.OptionForm()
+            form.values.choices = question['choices']
+        else:
+            form = forms.TagForm()
         form.legislation_id.data = legislation.id
         form.key.data = question['key']
         form.values.label.text = question['question']

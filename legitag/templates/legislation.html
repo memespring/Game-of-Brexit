@@ -22,7 +22,9 @@
           {{form.key}}
           {{form.values.label}}
           {{form.values}}
-          <p class="help-text">{{form.values.description}}</p>
+          {% if form.values.description %}
+            <p class="help-text">{{form.values.description}}</p>
+          {% endif %}
           
           {% if random %}
             <p>
@@ -34,6 +36,9 @@
           {% else %}
             <p>
               <button type="submit" class="button expanded">Save</button>
+            </p>
+            <p>
+              <a href="{{url_for('legislation')}}">I have no idea &mdash; skip this one</a>
             </p>
           {% endif %}
         </div>
