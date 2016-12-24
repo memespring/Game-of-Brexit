@@ -34,10 +34,11 @@ def generateleaguetable():
     models.EditCount.drop_collection()
     for key, value in ledger.items():
 
-        edit_count = models.EditCount()
-        edit_count.user = value['user']
-        edit_count.count = value['count']
-        edit_count.save()
+        if value['count'] > 0:
+            edit_count = models.EditCount()
+            edit_count.user = value['user']
+            edit_count.count = value['count']
+            edit_count.save()
 
 @manager.command
 def importdata():
