@@ -4,6 +4,8 @@ import feedparser
 from mongoengine import connect, DoesNotExist
 from time import sleep
 import re
+import os
+import csv
 
 manager = Manager(app)
 
@@ -18,15 +20,16 @@ def resetdatabase():
 
 @manager.command
 def generateleaguetable():
-    ledger = {}
+    ledger = {'0': {'user': None, 'count': 0}}
     legislations = models.Legislation.objects()
     for legislation in legislations:
         for edit in legislation._edits:
-            if edit.user.id in ledger:
+            if not edit.user:
+                ledger['0']['count'] += 1
+            elif edit.user.id in ledger:
                 ledger[edit.user.id]['count'] += 1
             else:
                 ledger[edit.user.id] = {'user': edit.user, 'count': 1}
-
     
     models.EditCount.drop_collection()
     for key, value in ledger.items():
@@ -36,61 +39,23 @@ def generateleaguetable():
         edit_count.count = value['count']
         edit_count.save()
 
-# @manager.command
-# def temp():
-
-#     legislations = models.Legislation.objects()
-#     for legislation in legislations:
-#         for tag in list(legislation._tags):
-#             if tag.key == 'user':
-#                 legislation._tags.remove(tag)
-#         legislation.save()
-
 @manager.command
 def importdata():
-
-    keep_going = True
-    page = 1
-    while keep_going:
-        
-        print "Importing page %s ..." % page
-
-        result = feedparser.parse('http://www.legislation.gov.uk/uksi/data.feed?text=%22European%20Communities%20Act%201972%22&page=' + str(page))
-
-        if int(result.feed['leg_page']) != page:
-            # when we reach the end, we get redirected back to page 1
-            keep_going = False
+    f = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/regulations.csv'))
+    reader = csv.reader(f)
+    next(reader, None)
+    for row in reader:
+        legislation = models.Legislation()
+        legislation.title = row[5]
+        if row[1] != '':
+            legislation.original_url = row[1]
         else:
-            for item in result.entries:
-                exists = True
-                try:
-                    models.Legislation.objects.get(original_url=item['id'])
-                except DoesNotExist:
-                    exists = False
-
-                if not exists:
-                    legislation = models.Legislation()
-                    legislation.title = item['title'][0:255]
-                    legislation.original_url = item['id']
-
-
-                    #handle case where there are english and welsh titles
-                    if '<span xml:lang="en">' in legislation.title:
-                        match = re.match('<span xml:lang="en">(.*?)</span>', legislation.title)
-                        legislation.title = match.group(1)
-
-                    for link in item.links:
-                        if link['rel'] == 'alternate':
-                            if link['type'] == 'application/xhtml+xml':
-                                legislation.html_url = link['href']
-                            if link['type'] == 'application/pdf':
-                                legislation.pdf_url = link['href']
-                    legislation.save()
-                    print "Saved %s " % legislation.title
-
-            page = page + 1
-            sleep(0.5)
-
+            legislation.original_url = row[0]
+        legislation.html_url = row[0]
+        try:
+            legislation.save()
+        except:
+            print "Failed to import: %s" % row.join(',')
 
 if __name__ == "__main__":
     manager.run()

@@ -1,9 +1,51 @@
 {% extends "base.html" %}
-{% block title %}Doteveryone - Legislation Tagger{% endblock %}
+{% block title %}EU Legislation Wiki{% endblock %}
 {% block content %}
   <section class="row expanded">
-    <div class="small-12 large-8 columns">
-      <h2>About</h2>
+      <div class="small-12 large-6 large-offset-3 columns">
+        <img id="logo" src="{{url_for('static', filename='images/logo.svg')}}" />
+        <h1>
+          Game of Brexit
+        </h1>
+        <p class="lead">
+          Making sense of Brexit one question at a time
+        </p>
+        <p>
+          We are about to copy and paste a large amount of EU regulations into UK law. You can help make sense of it.
+        </p>
+        <p>
+          <a href="{{url_for('legislation')}}" class="button expanded">Get started</a>
+        </p>
+        <div id="leaderboard">
+          <h2>Leader board</h2>
+          <p>
+            {% if current_user.is_authenticated %}
+              Signed in as {{current_user.name}}
+              <a href="{{ url_for('security.logout') }}">(Sign out)</a>
+            {% else %}
+              {% if security.registerable %}
+                <a href="{{ url_for('security.register') }}">Register</a>
+                or 
+                <a href="{{ url_for('security.login') }}">Login</a>
+              {% else %}
+                <a href="{{ url_for('security.login') }}">Login</a>
+              {% endif %}
+              to appear on the scoreboard
+            {% endif %}
+          </p>
+          <ol>
+            {% for count in edit_count %}
+              <li>
+                {% if count.user %}
+                  {{count.user.name}} ({{count.count}})
+                {% else %}
+                  Anonymous ({{count.count}})
+                {% endif %}
+              </li>
+            {% endfor%}
+          </ol>
+        </div>
     </div>
   </section>
+  
 {% endblock %}
